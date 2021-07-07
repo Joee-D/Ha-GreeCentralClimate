@@ -62,6 +62,8 @@ HVAC_MODES = [HVAC_MODE_AUTO, HVAC_MODE_COOL, HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY,
 
 FAN_MODES = [FAN_AUTO, FAN_LOW, 'medium-low', FAN_MIDDLE, 'medium-high', FAN_HIGH]
 
+TEMP_SENSORS = {'48218b1b000000': 'sensor.4c65a8dac083_temperature', '0a188a1b000000': 'sensor.48574300bf12_temperature','1c638b1b000000': 'sensor.0x158d000632c092_temperature'}
+
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
     vol.Required(CONF_HOST, default=BROADCAST_ADDRESS): cv.string,
@@ -276,6 +278,7 @@ class Gree2Climate(ClimateEntity):
         _LOGGER.info('Initialize the GREE climate device')
         self.hass = hass
         self.mac = mac
+        self._unique_id = 'greeCentral_' + mac
 
         self._name = name
         self._mid = mid
@@ -293,12 +296,34 @@ class Gree2Climate(ClimateEntity):
         self._hvac_modes = HVAC_MODES
         self._fan_modes = FAN_MODES
 
+        if mac in TEMP_SENSORS:
+            async_track_state_change(
+                hass, TEMP_SENSORS[mac], self._async_temp_changed)
+            temp_state = hass.states.get(TEMP_SENSORS[mac])
+            if temp_state:
+                self._async_update_temp(temp_state)
+		
         self._acOptions = {
             'Pow': 0,
             'Mod': str(self._hvac_mode.index(HVAC_MODE_OFF)),
             'WdSpd': 0,
             'SetTem': 26,
         }
+    @callback
+    def _async_update_temp(self, state):
+        """Update thermostat with latest state from sensor."""
+        try:
+            self._current_temperature = self.hass.config.units.temperature(
+                float(state.state), self._unit_of_measurement)
+        except ValueError as ex:
+            _LOGGER.error('Unable to update from sensor: %s', ex)
+
+    @asyncio.coroutine
+    def _async_temp_changed(self, entity_id, old_state, new_state):
+        if new_state is None:
+            return
+        self._async_update_temp(new_state)
+
     @property
     def should_poll(self):
         # Return the polling state.
@@ -309,6 +334,11 @@ class Gree2Climate(ClimateEntity):
         # Return the name of the climate device.
         return self._name
 
+    @property
+    def unique_id(self) -> str:
+        """Return a unique ID."""
+        return self._unique_id
+		
     @property
     def temperature_unit(self):
         # Return the unit of measurement.
