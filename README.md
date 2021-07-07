@@ -8,7 +8,6 @@ climate:
 ```
 
 效果图：
-![image](./ha-gree.jpg)
 
 # 参考
 [gree-hvac-mqtt-bridge](https://github.com/arthurkrupa/gree-hvac-mqtt-bridge)
