@@ -309,8 +309,19 @@ class Gree2Climate(ClimateEntity):
             'WdSpd': 0,
             'SetTem': 26,
         }
+        
+    def is_float(s):
+        try:
+            float(s)
+            return True
+        except ValueError:
+            pass
+        return False
+
     @callback
     def _async_update_temp(self, state):
+        if !is_float(state.state):
+            return;
         """Update thermostat with latest state from sensor."""
         try:
             self._current_temperature = self.hass.config.units.temperature(
