@@ -310,18 +310,13 @@ class Gree2Climate(ClimateEntity):
             'SetTem': 26,
         }
         
-    def is_float(s):
-        try:
-            float(s)
-            return True
-        except ValueError:
-            pass
-        return False
-
     @callback
     def _async_update_temp(self, state):
-        if !is_float(state.state):
-            return;
+        try:
+            float(state.state)
+            pass
+        except ValueError:
+            return
         """Update thermostat with latest state from sensor."""
         try:
             self._current_temperature = self.hass.config.units.temperature(
