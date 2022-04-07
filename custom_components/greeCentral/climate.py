@@ -60,7 +60,7 @@ HVAC_MODES = [HVAC_MODE_AUTO, HVAC_MODE_COOL, HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY,
 
 FAN_MODES = [FAN_AUTO, FAN_LOW, 'medium-low', FAN_MIDDLE, 'medium-high', FAN_HIGH]
 
-TEMP_SENSORS = {'48218b1b000000': 'sensor.4c65a8dac083_temperature', '0a188a1b000000': 'sensor.48574300bf12_temperature','1c638b1b000000': 'sensor.0x158d000632c092_temperature'}
+TEMP_SENSORS = {'48218b1b000000': 'sensor.2c116522c3ef_temperature', '0a188a1b000000': 'sensor.8cf6819b6e92_temperature','1c638b1b000000': 'sensor.2c11651e9299_temperature'}
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
