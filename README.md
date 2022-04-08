@@ -1,15 +1,15 @@
 # Ha-GreeCentralClimate
 格力中央空调Homeassistant插件，使用格力云控进行控制
 
-方式1：greeCentral目录复制到custom_components，再在configuration.yaml中加上配置：
+方式1：greeCentral目录复制到custom_components
+方式2：支持通过HACS自定义集成
+
+再在configuration.yaml中加上配置：
 ```
 climate:
   - platform: greeCentral
 ```
-方式2：
-支持通过HACS自定义集成
-![image](https://user-images.githubusercontent.com/32849562/162217206-37b7da25-f0af-4ba9-9e0d-85f967e0388c.png)
-![image](https://user-images.githubusercontent.com/32849562/162217652-5399b5e5-6c2d-4ab5-a809-06e9b41f3789.png)
+
 
 1.温度传感器
 请修改climate.py 65行
