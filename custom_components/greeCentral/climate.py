@@ -15,6 +15,7 @@ import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 import homeassistant.util.dt as dt_util
 from datetime import datetime, timedelta
+from homeassistant.config import DATA_CUSTOMIZE
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.event import async_call_later
 from homeassistant.components.climate import (ClimateEntity, PLATFORM_SCHEMA)
@@ -59,8 +60,6 @@ MAX_TEMP = 30
 HVAC_MODES = [HVAC_MODE_AUTO, HVAC_MODE_COOL, HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY, HVAC_MODE_HEAT, HVAC_MODE_OFF]
 
 FAN_MODES = [FAN_AUTO, FAN_LOW, 'medium-low', FAN_MIDDLE, 'medium-high', FAN_HIGH]
-
-TEMP_SENSORS = {'48218b1b000000': 'sensor.2c116522c3ef_temperature', '0a188a1b000000': 'sensor.8cf6819b6e92_temperature','1c638b1b000000': 'sensor.2c11651e9299_temperature'}
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
@@ -277,6 +276,7 @@ class Gree2Climate(ClimateEntity):
         self.hass = hass
         self.mac = mac
         self._unique_id = 'greeCentral_' + mac
+        self.entity_id = 'climate.ge_li_kong_diao_' + mac
 
         self._name = name
         self._mid = mid
@@ -294,13 +294,14 @@ class Gree2Climate(ClimateEntity):
         self._hvac_modes = HVAC_MODES
         self._fan_modes = FAN_MODES
 
-        if mac in TEMP_SENSORS:
+        temp_sensor = self.custom_config('temp_sensor')
+        if temp_sensor:
             async_track_state_change(
-                hass, TEMP_SENSORS[mac], self._async_temp_changed)
-            temp_state = hass.states.get(TEMP_SENSORS[mac])
+                hass, temp_sensor, self._async_temp_changed)
+            temp_state = hass.states.get(temp_sensor)
             if temp_state:
                 self._async_update_temp(temp_state)
-		
+
         self._acOptions = {
             'Pow': 0,
             'Mod': str(self._hvac_mode.index(HVAC_MODE_OFF)),
@@ -342,7 +343,7 @@ class Gree2Climate(ClimateEntity):
     def unique_id(self) -> str:
         """Return a unique ID."""
         return self._unique_id
-		
+
     @property
     def temperature_unit(self):
         # Return the unit of measurement.
@@ -492,3 +493,11 @@ class Gree2Climate(ClimateEntity):
         self.UpdateHATargetTemperature()
         self.UpdateHAHvacMode()
         self.UpdateHAFanMode()
+
+    def custom_config(self, key=None, default=None):
+        if not self.hass:
+            return default
+        if not self.entity_id:
+            return default
+        cfg = self.hass.data[DATA_CUSTOMIZE].get(self.entity_id) or {}
+        return cfg if key is None else cfg.get(key, default)
