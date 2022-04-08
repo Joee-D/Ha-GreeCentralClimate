@@ -1,5 +1,6 @@
 # Ha-GreeCentralClimate
 格力中央空调Homeassistant插件，使用格力云控进行控制
+
 ![image](https://user-images.githubusercontent.com/32849562/162439309-53d0ea12-2bcc-443d-933e-b08167a2b0c1.png)
 
 
@@ -7,6 +8,7 @@
 ## 方式2：支持通过HACS自定义集成
 
 在config下创建customize.yaml（后续会用到）
+
 在config下创建climate.yaml
 ```
 - platform: greeCentral
@@ -19,7 +21,9 @@ homeassistant:
 ```
 
 首次启动后，会自动生成对应的空调实体，可以获得空调实体id
+
 ![image](https://user-images.githubusercontent.com/32849562/162438731-84e79361-40d4-452a-a0ec-a4c775b50045.png)
+
 在customize.yaml中新增配置
 ```
 空调实体ID:
@@ -31,6 +35,9 @@ climate.ge_li_kong_diao_0a188a1b000000:
 climate.ge_li_kong_diao_1c638b1b000000:
   temp_sensor: sensor.2c11651e9299_temperature
 ```
+
+重启后即可正常获取到温度
+
 # 参考
 [Ha-GreeCentralClimate](https://github.com/xcy1231/Ha-GreeCentralClimate)
 
