@@ -6,8 +6,7 @@
 
 再在configuration.yaml中加上配置：
 ```
-climate:
-  - platform: greeCentral
+climate: !include climate.yaml
 ```
 
 
