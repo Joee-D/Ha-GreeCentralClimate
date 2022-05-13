@@ -4,11 +4,13 @@
 ![image](https://user-images.githubusercontent.com/32849562/162439309-53d0ea12-2bcc-443d-933e-b08167a2b0c1.png)
 
 
-## 方式1：greeCentral目录复制到custom_components
+## 方式1：拷贝目录
+greeCentral目录复制到custom_components
 ## 方式2：支持通过HACS自定义集成
+添加自定义集成，拷贝github地址到HACS添加
 
-在config下创建customize.yaml（后续会用到）
 
+## 复制完成或添加安装完成之后：
 在config下创建climate.yaml
 ```
 - platform: greeCentral
@@ -16,13 +18,15 @@
 再在configuration.yaml中加上配置：
 ```
 climate: !include climate.yaml
-homeassistant:
-  customize: !include customize.yaml
 ```
 
 首次启动后，会自动生成对应的空调实体，可以获得空调实体id
 
 ![image](https://user-images.githubusercontent.com/32849562/162438731-84e79361-40d4-452a-a0ec-a4c775b50045.png)
+
+
+## 支持温度显示
+在config下创建customize.yaml
 
 在customize.yaml中新增配置
 ```
@@ -35,7 +39,11 @@ climate.ge_li_kong_diao_0a188a1b000000:
 climate.ge_li_kong_diao_1c638b1b000000:
   temp_sensor: sensor.2c11651e9299_temperature
 ```
-
+再在configuration.yaml中加上配置：
+```
+homeassistant:
+  customize: !include customize.yaml
+```
 重启后即可正常获取到温度
 
 # 参考
